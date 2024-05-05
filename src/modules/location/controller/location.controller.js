@@ -1,10 +1,10 @@
 import { StatusCodes } from "http-status-codes";
 import locationDBService from "../../database/service/locationDb.service.js";
-
+import locationService from "../service/location.service.js";
 export default class LocationController {
   static async createLoction(req, res, next) {
     try {
-      let { name, lat, long } = req.body;
+      let { name} = req.body;
       name = name?.trim()?.toLowerCase();
 
       const isLocationExist = await locationDBService.fetchByName(name);
@@ -15,15 +15,19 @@ export default class LocationController {
         throw err;
       }
 
-      const { lastID } = await locationDBService.insert({ name: name, lat: lat, long: long });
+      const data = await locationService.fetchLatLong(name);
+
+      
+
+      const { lastID } = await locationDBService.insert({ name: name, lat: data.lat, long: data.long });
 
       const successResponse = {
         success: true,
         message: "Record created successfully",
         data: {
           name,
-          lat,
-          long,
+          lat: data.lat,
+          long : data.long,
           id: lastID,
         },
       };
@@ -96,7 +100,7 @@ export default class LocationController {
   static async updateLocationById(req, res, next) {
     try {
       const id = req.params.id;
-      let { name, lat, long } = req.body;
+      let { name} = req.body;
       name = name.trim().toLowerCase();
 
       const isLocationExist = await locationDBService.fetchById(id);
@@ -114,10 +118,12 @@ export default class LocationController {
         throw err;
       }
 
+      const data = await locationService.fetchLatLong(name);
+
       const payload = {
         name,
-        lat,
-        long,
+        lat: data.lat,
+        long: data.long,
       };
       const result = await locationDBService.update(id, payload);
 
@@ -151,7 +157,7 @@ export default class LocationController {
         message: "Data deleted successfully",
       };
 
-      res.status(StatusCodes.NO_CONTENT).json(successResponse);
+      res.status(StatusCodes.OK).json(successResponse);
     } catch (error) {
       next(error);
     }

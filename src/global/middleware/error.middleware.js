@@ -10,7 +10,7 @@ export const errorMiddleware = (err, req, res, next) => {
   if (err.type == "VALIDATION") {
     errorResponse.error.reason = ReasonPhrases.BAD_REQUEST;
     res.status(StatusCodes.BAD_REQUEST).json(errorResponse);
-  } else if (err.type == "CONTROLLER") {
+  } else if (err.type == "CONTROLLER" || err.type == "SERVICE") {
     errorResponse.error.reason = ReasonPhrases.BAD_REQUEST;
     res.status(StatusCodes.BAD_REQUEST).json(errorResponse);
   } else if (err.type == "DATABASE") {

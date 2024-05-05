@@ -1,4 +1,4 @@
-import { PATH } from "../constants/path.constant";
+import { PATH } from "../constants/path.constant.js";
 import "dotenv/config";
 
 export const geocodeApiPath = (location) => {
