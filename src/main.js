@@ -2,11 +2,10 @@ import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import { StatusCodes } from "http-status-codes";
-import { fileURLToPath } from "url";
-import routes from "./router/routes.js";
-
 import { dirname } from "path";
+import { fileURLToPath } from "url";
 import { errorMiddleware } from "./global/middleware/error.middleware.js";
+import routes from "./router/routes.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
