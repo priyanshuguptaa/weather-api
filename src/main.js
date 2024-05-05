@@ -30,7 +30,10 @@ app.all("*",(req, res, next)=>{
 })
 
 app.use((err, req, res, next) => {
+  console.log("*********************************")
   console.log(err.stack)
+  console.log(err.type)
+  err.message = err.message.replaceAll("\\", "").replaceAll("\"", "")
   if (err && err.name === "UnauthorizedError") {
     return res.status(401).json({
       status: "error",

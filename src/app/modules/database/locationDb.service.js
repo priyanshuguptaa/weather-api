@@ -37,6 +37,7 @@ export default class LocationDbService {
    */
   static async update(id, updates) {
     try {
+      console.log("db update", id, updates)
       if (!updates || Object.keys(updates).length === 0) {
         throw new Error("No column is provided to update");
       }
@@ -106,11 +107,11 @@ export default class LocationDbService {
    * @param {number} pageNumber - The page number to fetch.
    * @returns {Promise} A promise that resolves with the fetched records.
    */
-  static async fetch(pageSize, pageNumber) {
+  static async fetchAll(skip, limit) {
     try {
-      const offset = (pageNumber - 1) * pageSize;
+      console.log(skip,limit, "fetchall")
       const sql = `SELECT * FROM locations LIMIT ? OFFSET ?;`;
-      const values = [pageSize, offset];
+      const values = [limit, skip];
 
       const rows = await new Promise((resolve, reject) => {
         db.all(sql, values, (err, rows) => {
@@ -154,4 +155,56 @@ export default class LocationDbService {
       throw error; // Re-throw the error to propagate it to the caller
     }
   }
+
+  /**
+   * Fetches location records from the database based on name.
+   * @param {string} name - The name to search for.
+   * @returns {Promise} A promise that resolves with the array of location records.
+   */
+  static async fetchByName(name) {
+    try {
+      const sql = "SELECT * FROM locations WHERE name = ?;";
+      const rows = await new Promise((resolve, reject) => {
+        db.all(sql, [name], (err, rows) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(rows);
+          }
+        });
+      });
+
+      return rows;
+    } catch (error) {
+      // Handle the error
+      console.error("Error fetching data by name:", error);
+      throw error; // Re-throw the error to propagate it to the caller
+    }
+  }
+
+    /**
+   * Fetches location records from the database based on name.
+   * @param {string} id - The id to search for.
+   * @returns {Promise} A promise that resolves with the array of location records.
+   */
+    static async fetchById(id) {
+      try {
+        const sql = "SELECT * FROM locations WHERE id = ?;";
+        const rows = await new Promise((resolve, reject) => {
+          db.all(sql, [id], (err, rows) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(rows);
+            }
+          });
+        });
+  
+        return rows;
+      } catch (error) {
+        // Handle the error
+        console.error("Error fetching data by name:", error);
+        throw error; // Re-throw the error to propagate it to the caller
+      }
+    }
 }

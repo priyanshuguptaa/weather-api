@@ -10,7 +10,7 @@ const db = new sqlite3.Database(dbName, (err) => {
     db.run(
       `CREATE TABLE IF NOT EXISTS locations (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name VARCHAR(255) NOT NULL,
+            name VARCHAR(255) NOT NULL UNIQUE,
             lat DECIMAL(9,6) NOT NULL,
             long DECIMAL(9,6) NOT NULL
         )`,
