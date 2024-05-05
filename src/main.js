@@ -1,11 +1,12 @@
 import cors from "cors";
-import 'dotenv/config';
+import "dotenv/config";
 import express from "express";
+import { StatusCodes } from "http-status-codes";
 import { fileURLToPath } from "url";
 import routes from "./router/routes.js";
 
-
 import { dirname } from "path";
+import { errorMiddleware } from "./global/middleware/error.middleware.js";
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -21,30 +22,18 @@ app.use(routes);
 app.use(express.static(__dirname + "/assets"));
 
 app.get("/", (req, res) => {
-  res.json({ status: "API is running on /api" });
+  const successResponse = { success: true, message: "API is running on /api" };
+  res.status(StatusCodes.OK).json(successResponse);
 });
 
-app.all("*",(req, res, next)=>{
+app.all("*", (req, res, next) => {
   const err = new Error(`Can't find ${req.originalUrl} on the server!`);
-  
-})
-
-app.use((err, req, res, next) => {
-  console.log("*********************************")
-  console.log(err.stack)
-  console.log(err.type)
-  err.message = err.message.replaceAll("\\", "").replaceAll("\"", "")
-  if (err && err.name === "UnauthorizedError") {
-    return res.status(401).json({
-      status: "error",
-      message: "missing authorization credentials",
-    });
-  } else if (err && err.errorCode) {
-    res.status(err.errorCode).json(err.message);
-  } else if (err) {
-    res.status(500).json(err.message);
-  }
+  err.type = "CONTROLLER";
+  return next(err);
 });
+
+// Error handler middleware
+app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 3000;
 

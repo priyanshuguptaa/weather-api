@@ -1,3 +1,4 @@
+import { StatusCodes } from "http-status-codes";
 import locationDBService from "../../database/service/locationDb.service.js";
 
 export default class LocationController {
@@ -9,12 +10,25 @@ export default class LocationController {
       const isLocationExist = await locationDBService.fetchByName(name);
 
       if (isLocationExist?.length) {
-        console.log(name,isLocationExist)
-        throw new Error("Location Already exist");
+        let err = new Error("Location Already exist");
+        err.type = "CONTROLLER";
+        throw err;
       }
 
-      const result = await locationDBService.insert({ name: name, lat: lat, long: long });
-      res.json(result);
+      const { lastID } = await locationDBService.insert({ name: name, lat: lat, long: long });
+
+      const successResponse = {
+        success: true,
+        message: "Record created successfully",
+        data: {
+          name,
+          lat,
+          long,
+          id: lastID,
+        },
+      };
+
+      res.status(StatusCodes.CREATED).json(successResponse);
     } catch (error) {
       next(error);
     }
@@ -24,7 +38,7 @@ export default class LocationController {
     try {
       let skip = 0;
 
-      let { page=0, limit=0 } = req.query;
+      let { page = 0, limit = 0 } = req.query;
 
       if (page <= 1) {
         page = 1;
@@ -39,7 +53,19 @@ export default class LocationController {
       const result = await locationDBService.fetchAll(skip, limit);
       const count = await locationDBService.count();
 
-      res.json({result,count});
+      const successResponse = {
+        success: true,
+        message: "Data retrieved successfully",
+        pagination: {
+          total_items: Number(count),
+          total_pages: Math.ceil(Number(count) / Number(limit)),
+          current_page: Number(page),
+          per_page: Number(limit),
+        },
+        data: result,
+      };
+
+      res.status(StatusCodes.OK).json(successResponse);
     } catch (error) {
       next(error);
     }
@@ -49,11 +75,19 @@ export default class LocationController {
     try {
       const result = await locationDBService.fetchById(req.params.id);
 
-      if(!(result?.length)){
-        throw new Error('No location found with this id')
+      if (!result?.length) {
+        let err = new Error("No location found with this id");
+        err.type = "CONTROLLER";
+        throw err;
       }
 
-      res.json(result);
+      const successResponse = {
+        success: true,
+        message: "Data retrieved successfully",
+        data: result,
+      };
+
+      res.status(StatusCodes.OK).json(successResponse);
     } catch (error) {
       next(error);
     }
@@ -61,31 +95,39 @@ export default class LocationController {
 
   static async updateLocationById(req, res, next) {
     try {
-
       const id = req.params.id;
-      let {name,lat,long} = req.body;
+      let { name, lat, long } = req.body;
       name = name.trim().toLowerCase();
 
       const isLocationExist = await locationDBService.fetchById(id);
 
-      if(!(isLocationExist.length)){
-        throw new Error('No location found with this id');
+      if (!isLocationExist.length) {
+        let err = new Error("No location found with this id");
+        err.type = "CONTROLLER";
+        throw err;
       }
 
       const isConflictLocation = await locationDBService.fetchByName(name);
-      if(isConflictLocation.length){
-        throw new Error('Conflict, location alrady exist with same name');
+      if (isConflictLocation.length) {
+        let err = new Error("Conflict, location alrady exist with same name");
+        err.type = "CONTROLLER";
+        throw err;
       }
 
-      console.log("update",req.params.id, req.body)
       const payload = {
         name,
         lat,
-        long
-      }
-      const result = await locationDBService.update(id,payload);
+        long,
+      };
+      const result = await locationDBService.update(id, payload);
 
-      res.json(result);
+      const successResponse = {
+        success: true,
+        message: "Data updated successfully",
+        data: { ...payload, id },
+      };
+
+      res.status(StatusCodes.OK).json(successResponse);
     } catch (error) {
       next(error);
     }
@@ -96,13 +138,20 @@ export default class LocationController {
       const id = req.params.id;
       const isLocationExist = await locationDBService.fetchById(id);
 
-      if(!(isLocationExist.length)){
-        throw new Error('No location found with this id');
+      if (!isLocationExist.length) {
+        let err = new Error("No location found with this id");
+        err.type = "CONTROLLER";
+        throw err;
       }
 
       const result = await locationDBService.delete(id);
-      
-      res.json(result);
+
+      const successResponse = {
+        success: true,
+        message: "Data deleted successfully",
+      };
+
+      res.status(StatusCodes.NO_CONTENT).json(successResponse);
     } catch (error) {
       next(error);
     }

@@ -1,12 +1,11 @@
 import sqlite3 from "sqlite3";
 
-const dbName = "weather.sqlite"
+const dbName = "weather.sqlite";
 const db = new sqlite3.Database(dbName, (err) => {
   if (err) {
     console.log(err.message);
     process.exit(1);
   } else {
-    console.log("Connected to the Database");
     db.run(
       `CREATE TABLE IF NOT EXISTS locations (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -19,7 +18,7 @@ const db = new sqlite3.Database(dbName, (err) => {
           console.error(error.message);
           process.exit(1);
         } else {
-          console.log("Table created");
+          console.log("DATABASE connected successfully");
         }
       }
     );

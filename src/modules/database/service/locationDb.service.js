@@ -23,8 +23,9 @@ export default class LocationDbService {
 
       return result;
     } catch (error) {
-      // Handle the error
+      
       console.error("Error inserting data:", error);
+      error.type = "DATABASE"
       throw error; // Re-throw the error to propagate it to the caller
     }
   }
@@ -67,8 +68,9 @@ export default class LocationDbService {
 
       return result;
     } catch (error) {
-      // Handle the error
+    
       console.error("Error updating data:", error);
+      error.type = "DATABASE"
       throw error; // Re-throw the error to propagate it to the caller
     }
   }
@@ -97,6 +99,7 @@ export default class LocationDbService {
     } catch (error) {
       // Handle the error
       console.error("Error deleting data:", error);
+      error.type = "DATABASE"
       throw error; // Re-throw the error to propagate it to the caller
     }
   }
@@ -127,6 +130,7 @@ export default class LocationDbService {
     } catch (error) {
       // Handle the error
       console.error("Error fetching data:", error);
+      error.type = "DATABASE"
       throw error; // Re-throw the error to propagate it to the caller
     }
   }
@@ -152,6 +156,7 @@ export default class LocationDbService {
     } catch (error) {
       // Handle the error
       console.error("Error counting data:", error);
+      error.type = "DATABASE"
       throw error; // Re-throw the error to propagate it to the caller
     }
   }
@@ -178,6 +183,7 @@ export default class LocationDbService {
     } catch (error) {
       // Handle the error
       console.error("Error fetching data by name:", error);
+      error.type = "DATABASE"
       throw error; // Re-throw the error to propagate it to the caller
     }
   }
@@ -204,6 +210,7 @@ export default class LocationDbService {
       } catch (error) {
         // Handle the error
         console.error("Error fetching data by name:", error);
+        error.type = "DATABASE"
         throw error; // Re-throw the error to propagate it to the caller
       }
     }
