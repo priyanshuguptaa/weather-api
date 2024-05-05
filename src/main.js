@@ -2,8 +2,8 @@ import cors from "cors";
 import 'dotenv/config';
 import express from "express";
 import { fileURLToPath } from "url";
-import routes from "./app/routes/routes.js";
-
+import routes from "./app/modules/routes.js";
+import db from "./config/db.js"
 
 import { dirname } from "path";
 
@@ -24,7 +24,13 @@ app.get("/", (req, res) => {
   res.json({ status: "API is running on /api" });
 });
 
+app.all("*",(req, res, next)=>{
+  const err = new Error(`Can't find ${req.originalUrl} on the server!`);
+  
+})
+
 app.use((err, req, res, next) => {
+  console.log(err.stack)
   if (err && err.name === "UnauthorizedError") {
     return res.status(401).json({
       status: "error",
