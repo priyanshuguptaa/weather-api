@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import locationController from './location/location.router.js';
-import weatherController from './weather/weather.router.js';
+import locationController from '../modules/location/route/location.route.js';
+import weatherController from '../modules/weather/route/weather.route.js';
 
 
 const api = Router()

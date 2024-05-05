@@ -2,8 +2,8 @@ import cors from "cors";
 import 'dotenv/config';
 import express from "express";
 import { fileURLToPath } from "url";
-import routes from "./app/modules/routes.js";
-import db from "./config/db.js"
+import routes from "./router/routes.js";
+
 
 import { dirname } from "path";
 

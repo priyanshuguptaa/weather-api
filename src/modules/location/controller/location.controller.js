@@ -1,4 +1,4 @@
-import locationDBService from "../database/locationDb.service.js";
+import locationDBService from "../../database/service/locationDb.service.js";
 
 export default class LocationController {
   static async createLoction(req, res, next) {
