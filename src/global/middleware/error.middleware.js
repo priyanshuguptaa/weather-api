@@ -1,6 +1,14 @@
 import { ReasonPhrases, StatusCodes } from "http-status-codes";
+import logger from "../../config/logger.js";
 
 export const errorMiddleware = (err, req, res, next) => {
+
+  logger.error({
+    message: err.message,
+    stack: err.stack,
+    type: err.type
+  })
+
   let errorResponse = {
     error: {
       message: err.message.replaceAll("\\", "").replaceAll('"', ""),

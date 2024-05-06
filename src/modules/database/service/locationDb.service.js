@@ -38,7 +38,6 @@ export default class LocationDbService {
    */
   static async update(id, updates) {
     try {
-      console.log("db update", id, updates)
       if (!updates || Object.keys(updates).length === 0) {
         throw new Error("No column is provided to update");
       }
@@ -112,7 +111,7 @@ export default class LocationDbService {
    */
   static async fetchAll(skip, limit) {
     try {
-      console.log(skip,limit, "fetchall")
+      (skip,limit, "fetchall")
       const sql = `SELECT * FROM locations LIMIT ? OFFSET ?;`;
       const values = [limit, skip];
 

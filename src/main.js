@@ -4,7 +4,9 @@ import express from "express";
 import { StatusCodes } from "http-status-codes";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
+import { limiter } from "./config/rateLimiter.js";
 import { errorMiddleware } from "./global/middleware/error.middleware.js";
+import requestLoggerMiddleware from "./global/middleware/requestLogger.middleware.js";
 import routes from "./router/routes.js";
 
 const app = express();
@@ -15,6 +17,8 @@ const __dirname = dirname(__filename);
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(limiter);
+app.use(requestLoggerMiddleware);
 app.use(routes);
 
 // Serves images

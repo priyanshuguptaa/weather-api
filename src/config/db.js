@@ -1,9 +1,14 @@
 import sqlite3 from "sqlite3";
+import logger from "./logger.js";
 
 const dbName = "weather.sqlite";
 const db = new sqlite3.Database(dbName, (err) => {
   if (err) {
-    console.log(err.message);
+    logger.error({
+      message: err?.message,
+      stack: err?.stack,
+      type: 'DATABASE'
+    })
     process.exit(1);
   } else {
     db.run(
@@ -15,7 +20,11 @@ const db = new sqlite3.Database(dbName, (err) => {
         )`,
       (error) => {
         if (error) {
-          console.error(error.message);
+          logger.error({
+            message: error?.message,
+            stack: error?.stack,
+            type: 'DATABASE'
+          })
           process.exit(1);
         } else {
           console.log("DATABASE connected successfully");
